@@ -162,7 +162,7 @@ for (i in 1:6) {
 }
 
 ## Generate and save figure
-tiff("outputs/Figure3.tiff",units="in",width=10,height=4, res=400)
+tiff("outputs/Fig3.tiff",units="in",width=10,height=4, res=400)
 my_palette <- brewer.pal(name="Dark2",n=6)
 my_palette <- palette(c(my_palette,"black"))
 # Panel A
@@ -172,7 +172,7 @@ pa<-ggplot(curve,aes(doy,bt)) +
   geom_point(aes(x=150,y=bt[150]),size=4,shape=24,fill="white") +
   geom_point(aes(x=366,y=bt[366]),size=4,shape=23,fill="white") +
   ylab("BEUTI cumulative sum\n(mmol/m/s)") +
-  xlab("Day of year") +  
+  xlab("Yearday") +  
   theme_classic() +
   theme(legend.position = "none") +
   annotate("text", label = expression(TUMI == sum(BEUTI(t), i=STI, END)), x = 60, y = 2800) +
@@ -205,7 +205,7 @@ pb<-ggplot(beuti_clim, aes(yday,csummean)) +
   annotate("text", label = "2019", x = 309, y = 1605, color = my_palette[5], size=3) +
   annotate("text", label = "2020", x = 378, y = 2525, color = my_palette[6], size=3) +
   ylab("BEUTI cumulative sum\n(mmol/m/s)") +
-  xlab("Day of year") +
+  xlab("Yearday") +
   theme_classic() +
   theme(legend.position = "none")  +
   geom_point(aes(x=20,y=2600),shape=21,color="black",fill="white",size=3) +

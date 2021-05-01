@@ -1,10 +1,9 @@
 #####################################
-# song_ts.R
+# windowsizes_supp.R
 # 
-# Identifies periods of behavioral transition (foraging->migration) from CInight:CIday.
-# Plots CI (song) time series (2015-2020) at daily resolution.
-# Plots CInight:CIday time series (2015-2020) at daily resolution, highlighting periods of behavioral transition.
-# Generates Figure 2.
+# Explores different window sizes for statistical definition of CInight:CIday.
+# Also allows for exploration of different smoothing window sizes for visualization as in Figure 2.
+# Can generate Figures S1 and S2.
 #
 # Will Oestreich
 # Last update: May 1, 2021
@@ -103,11 +102,8 @@ decrease19 <- decrease %>%
 decrease20 <- decrease %>%
   filter(date<as.Date("2021-03-01") & date>as.Date("2020-08-15"))
 
-## save decrease as csv
-write.csv(decrease,"outputs/decrease.csv", row.names = FALSE)
-
-## generate Figure 2
-tiff("outputs/Fig2.tiff",units="in", width=10,height=4,res=300)
+## generate supplemental figure panels
+tiff("test.tiff",units="in", width=10,height=4,res=300)
 # panel A
 pa <- ci_daily_seq %>%
   select(date,n_rm,d_rm) %>% 

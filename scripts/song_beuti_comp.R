@@ -200,8 +200,8 @@ p1a <- ggplot(phenology, aes(x=maxirm,y=doy)) +
   scale_color_manual(values=my_palette) +
   geom_point(aes(x=maxirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
-  xlab(expression('BEUTI'[MAX]*' (day of year)')) +
-  ylab("Behavioral transition\n(day of year)") + 
+  xlab(expression('BEUTI'[MAX]*' (yearday)')) +
+  ylab("Behavioral transition\n(yearday)") + 
   xlim(110,190) +
   annotate("text", label = "C", x = 111, y = 362, fontface = 2) +
   theme_classic() + theme(legend.title = element_blank()) + theme(legend.direction = "horizontal")
@@ -212,8 +212,8 @@ p1b <- ggplot(songplus, aes(x=maxirm,y=doy)) +
   scale_color_manual(values=my_palette) +
   geom_point(aes(x=maxirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
-  xlab(expression('BEUTI'[MAX]*' (day of year)')) +
-  ylab("Song presence\n(day of year)") + 
+  xlab(expression('BEUTI'[MAX]*' (yearday)')) +
+  ylab("Song presence\n(yearday)") + 
   xlim(110,190) +
   annotate("text", label = "A", x = 111, y = 390, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
@@ -224,8 +224,8 @@ p2a <- ggplot(phenology, aes(x=stirm,y=doy)) +
   scale_color_manual(values=my_palette) +
   geom_point(aes(x=stirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
-  xlab(expression('BEUTI'[STI]*' (day of year)')) +
-  ylab("Behavioral transition\n(day of year)") +  
+  xlab(expression('BEUTI'[STI]*' (yearday)')) +
+  ylab("Behavioral transition\n(yearday)") +  
   xlim(0,60) +
   annotate("text", label = "D", x = 1, y = 362, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
@@ -235,8 +235,8 @@ p2b <- ggplot(songplus, aes(x=stirm,y=doy)) +
   scale_color_manual(values=my_palette) +
   geom_point(aes(x=stirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
-  xlab(expression('BEUTI'[STI]*' (day of year)')) +
-  ylab("Song presence\n(day of year)") + 
+  xlab(expression('BEUTI'[STI]*' (yearday)')) +
+  ylab("Song presence\n(yearday)") + 
   xlim(0,60) +
   annotate("text", label = "A", x = 1, y = 390, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
@@ -247,7 +247,7 @@ p3a <- ggplot(phenology, aes(x=endirm,y=doy)) +
   scale_color_manual(values=my_palette) +
   geom_point(aes(x=endirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
-  xlab(expression('BEUTI'[END]*' (day of year)')) +
+  xlab(expression('BEUTI'[END]*' (yearday)')) +
   ylab("") + 
   xlim(320,380) +
   annotate("text", label = "E", x = 321, y = 362, fontface = 2) +
@@ -258,7 +258,7 @@ p3b <- ggplot(songplus, aes(x=endirm,y=doy)) +
   scale_color_manual(values=my_palette) +
   geom_point(aes(x=endirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) + 
-  xlab(expression('BEUTI'[END]*' (day of year)')) +
+  xlab(expression('BEUTI'[END]*' (yearday)')) +
   ylab("") + 
   xlim(320,380) +
   annotate("text", label = "B", x = 321, y = 390, fontface = 2) +
