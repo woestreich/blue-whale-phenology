@@ -185,240 +185,178 @@ phenology<-merge(d1,decrease,by="year",all=TRUE)
 songplus<-merge(d1,song,by="year",all=TRUE)
 
 ## Statistics for Figure 4
-# Panel A (transition vs. MAX)
-x1 <- c(128,118,123,160,154,185) # MAX index
-y1 <- c(248,256,231,322,296,340) # start of transition
-y2 <- c(267.5,277.5,294,335.5,325.5,353.5) # center of transition
-y3 <- c(287,299,357,349,355,367) # end of transition
-# start of transition lm
-mstart_a <- lm(y1~x1)
-start_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(start_a_pts) <- c("x","y")
-start_a_pts$x <- c(min(x1),max(x1))
-start_a_pts$y <- c(mstart_a$coefficients[1] + mstart_a$coefficients[2]*min(x1),
-                 mstart_a$coefficients[1] + mstart_a$coefficients[2]*max(x1))
-# center of transition lm
-mcenter_a <- lm(y2~x1)
-center_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(center_a_pts) <- c("x","y")
-center_a_pts$x <- c(min(x1),max(x1))
-center_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(x1),
-                   mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(x1))
-#end of transition lm
-mend_a <- lm(y3~x1)
-end_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(end_a_pts) <- c("x","y")
-end_a_pts$x <- c(min(x1),max(x1))
-end_a_pts$y <- c(mend_a$coefficients[1] + mend_a$coefficients[2]*min(x1),
-                    mend_a$coefficients[1] + mend_a$coefficients[2]*max(x1))
-
-# Panel B (transition vs. TUMI)
-x2 <- c(1220.241,1538.166,1910.764,2055.806,1645.540,2400.422) #TUMI
-#start of transition lm
-mstart_b <- lm(y1~x2)
-start_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(start_b_pts) <- c("x","y")
-start_b_pts$x <- c(min(x2),max(x2))
-start_b_pts$y <- c(mstart_b$coefficients[1] + mstart_b$coefficients[2]*min(x2),
-                   mstart_b$coefficients[1] + mstart_b$coefficients[2]*max(x2))
-#center of transition lm
-mcenter_b <- lm(y2~x2)
-center_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(center_b_pts) <- c("x","y")
-center_b_pts$x <- c(min(x2),max(x2))
-center_b_pts$y <- c(mcenter_b$coefficients[1] + mcenter_b$coefficients[2]*min(x2),
-                   mcenter_b$coefficients[1] + mcenter_b$coefficients[2]*max(x2))
-#end of transition lm
-mend_b <- lm(y3~x2)
-end_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(end_b_pts) <- c("x","y")
-end_b_pts$x <- c(min(x2),max(x2))
-end_b_pts$y <- c(mend_b$coefficients[1] + mend_b$coefficients[2]*min(x2),
-                    mend_b$coefficients[1] + mend_b$coefficients[2]*max(x2))
-
-## Generate Figure 4 
-my_palette <- brewer.pal(name="Dark2",n=6)
-# extract legend
-# https://github.com/hadley/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)}
-
-# Max index (running mean version)
-pa <- ggplot(phenology, aes(x=maxirm,y=doy)) +
-  geom_point(aes(color=as.factor(year)),size=1) +
-  scale_color_manual(values=my_palette) +
-  geom_point(aes(x=maxirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
-  scale_fill_manual(values=my_palette) +
-  geom_line(data=start_a_pts, aes(x=x,y=y), linetype = "dashed") +
-  geom_line(data=center_a_pts, aes(x=x,y=y)) +
-  geom_line(data=end_a_pts, aes(x=x,y=y), linetype = "dashed") +
-  annotate("text", x = 188, y = 347, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 207.5, y = 347, label = "*", size=3, parse = FALSE, hjust = 0) +
-  annotate("text", x = 188, y = 360, label = paste('R^2 ==',round(summary(mcenter_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 207.5, y = 360, label = "*", size=3, parse = FALSE, hjust = 0) +
-  annotate("text", x = 188, y = 373, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  xlab(expression('BEUTI'[MAX]*' (yearday)')) +
-  ylab("Behavioral transition\n(yearday)") + 
-  xlim(110,210) +
-  ylim(230,380) +
-  annotate("text", label = "A", x = 111, y = 370, fontface = 2) +
-  theme_classic() + theme(legend.title = element_blank()) + theme(legend.direction = "horizontal")
-mylegend<-g_legend(p1a)
-
-# Total upwelling magnitude index
-pb <- ggplot(phenology, aes(x=tumi,y=doy)) +
-  geom_point(aes(color=as.factor(year)),size=1) +
-  scale_color_manual(values=my_palette) +
-  geom_point(aes(x=tumi,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
-  scale_fill_manual(values=my_palette) +
-  geom_line(data=start_b_pts, aes(x=x,y=y), linetype = "dashed") +
-  geom_line(data=center_b_pts, aes(x=x,y=y)) +
-  geom_line(data=end_b_pts, aes(x=x,y=y), linetype = "dashed") +
-  annotate("text", x = 2450, y = 326, label = paste('R^2 ==',round(summary(mstart_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 2450, y = 353, label = paste('R^2 ==',round(summary(mcenter_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 2780, y = 353, label = "*", size=3, parse = FALSE, hjust = 0) +
-  annotate("text", x = 2450, y = 380, label = paste("R^2 ==",round(summary(mend_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 2780, y = 380, label = "*", size=3, parse = FALSE, hjust = 0) +
-  xlab(expression('BEUTI'[TUMI]*' (mmol/m/s)')) +
-  ylab("") + 
-  xlim(1100,2800) +
-  ylim(230,380) +
-  annotate("text", label = "B", x = 1125, y = 370, fontface = 2) +
-  theme_classic() + theme(legend.position = 'none')
-
-## 2-panel version of Figure 4, showing behavioral transition in comparison to MAX and TUMI
-tiff("outputs/Fig4.tiff",units="in", width=7,height=3,res=300)
-grid.arrange(pa+theme(legend.position = c(.65,.2),
-                       legend.background = element_blank(),
-                       legend.box.background = element_rect(color = "black")) +
-               guides(color = guide_legend(nrow = 3)),
-             pb,nrow=1,ncol=2,
-             heights=c(2.8),
-             widths =c(2.95,2.8))
-dev.off()
-
-
-## Supplemental figure 3
-# S3 stats
-x1 <- c(128,118,123,160,154,185) # MAX index
-x2 <- c(1220.241,1538.166,1910.764,2055.806,1645.540,2400.422) #TUMI
-y1 <- c(211,230,190,189,205,197) # start of song
-y2 <- c(268,302,307,293,315,310) # peak of song
-y3 <- c(252,389,380,392,391,386) # end of song
-
-# start of song vs. max lm
-mstart_a <- lm(y1~x1)
+# Panel A (transition vs. STI)
+x1 <- c(43,26,42,5,20,5) # STI
+y4 <- c(248,256,231,322,296,340) # start of transition
+y5 <- c(267.5,277.5,294,335.5,325.5,353.5) # center of transition
+y6 <- c(287,299,357,349,355,367) # end of transition
+# start of transition vs. sti lm
+mstart_a <- lm(y4~x1)
 start_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(start_a_pts) <- c("x","y")
 start_a_pts$x <- c(min(x1),max(x1))
 start_a_pts$y <- c(mstart_a$coefficients[1] + mstart_a$coefficients[2]*min(x1),
                    mstart_a$coefficients[1] + mstart_a$coefficients[2]*max(x1))
-# peak of song vs. max lm
-mpeak_a <- lm(y2~x1)
-peak_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(peak_a_pts) <- c("x","y")
-peak_a_pts$x <- c(min(x1),max(x1))
-peak_a_pts$y <- c(mpeak_a$coefficients[1] + mpeak_a$coefficients[2]*min(x1),
-                  mpeak_a$coefficients[1] + mpeak_a$coefficients[2]*max(x1))
-# end of song vs. max lm
-mend_a <- lm(y3~x1)
+# center of transition vs. sti lm
+mcenter_a <- lm(y5~x1)
+center_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(center_a_pts) <- c("x","y")
+center_a_pts$x <- c(min(x1),max(x1))
+center_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(x1),
+                    mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(x1))
+# end of transition vs. sti lm
+mend_a <- lm(y6~x1)
 end_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(end_a_pts) <- c("x","y")
 end_a_pts$x <- c(min(x1),max(x1))
 end_a_pts$y <- c(mend_a$coefficients[1] + mend_a$coefficients[2]*min(x1),
                  mend_a$coefficients[1] + mend_a$coefficients[2]*max(x1))
-# start of song vs. tumi lm
-mstart_b <- lm(y1~x2)
+
+# Panel B (transition vs. MAX)
+x1 <- c(128,118,123,160,154,185) # MAX index
+y1 <- c(248,256,231,322,296,340) # start of transition
+y2 <- c(267.5,277.5,294,335.5,325.5,353.5) # center of transition
+y3 <- c(287,299,357,349,355,367) # end of transition
+# start of transition lm
+mstart_b <- lm(y1~x1)
 start_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(start_b_pts) <- c("x","y")
-start_b_pts$x <- c(min(x2),max(x2))
-start_b_pts$y <- c(mstart_b$coefficients[1] + mstart_b$coefficients[2]*min(x2),
-                   mstart_b$coefficients[1] + mstart_b$coefficients[2]*max(x2))
-# peak of song vs. tumi lm
-mpeak_b <- lm(y2~x2)
-peak_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(peak_b_pts) <- c("x","y")
-peak_b_pts$x <- c(min(x2),max(x2))
-peak_b_pts$y <- c(mpeak_b$coefficients[1] + mpeak_b$coefficients[2]*min(x2),
-                  mpeak_b$coefficients[1] + mpeak_b$coefficients[2]*max(x2))
-# end of song vs. tumi lm
-mend_b <- lm(y3~x2)
+start_b_pts$x <- c(min(x1),max(x1))
+start_b_pts$y <- c(mstart_b$coefficients[1] + mstart_b$coefficients[2]*min(x1),
+                 mstart_b$coefficients[1] + mstart_b$coefficients[2]*max(x1))
+# center of transition lm
+mcenter_b <- lm(y2~x1)
+center_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(center_b_pts) <- c("x","y")
+center_b_pts$x <- c(min(x1),max(x1))
+center_b_pts$y <- c(mcenter_b$coefficients[1] + mcenter_b$coefficients[2]*min(x1),
+                   mcenter_b$coefficients[1] + mcenter_b$coefficients[2]*max(x1))
+#end of transition lm
+mend_b <- lm(y3~x1)
 end_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(end_b_pts) <- c("x","y")
-end_b_pts$x <- c(min(x2),max(x2))
-end_b_pts$y <- c(mend_b$coefficients[1] + mend_b$coefficients[2]*min(x2),
-                 mend_b$coefficients[1] + mend_b$coefficients[2]*max(x2))
+end_b_pts$x <- c(min(x1),max(x1))
+end_b_pts$y <- c(mend_b$coefficients[1] + mend_b$coefficients[2]*min(x1),
+                    mend_b$coefficients[1] + mend_b$coefficients[2]*max(x1))
 
-# song vs. max
-s3a <- ggplot(songplus, aes(x=maxirm,y=doy)) +
+# Panel C (transition vs. TUMI)
+x2 <- c(1220.241,1538.166,1910.764,2055.806,1645.540,2400.422) #TUMI
+#start of transition lm
+mstart_c <- lm(y1~x2)
+start_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(start_c_pts) <- c("x","y")
+start_c_pts$x <- c(min(x2),max(x2))
+start_c_pts$y <- c(mstart_c$coefficients[1] + mstart_c$coefficients[2]*min(x2),
+                   mstart_c$coefficients[1] + mstart_c$coefficients[2]*max(x2))
+#center of transition lm
+mcenter_c <- lm(y2~x2)
+center_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(center_c_pts) <- c("x","y")
+center_c_pts$x <- c(min(x2),max(x2))
+center_c_pts$y <- c(mcenter_c$coefficients[1] + mcenter_c$coefficients[2]*min(x2),
+                   mcenter_c$coefficients[1] + mcenter_c$coefficients[2]*max(x2))
+#end of transition lm
+mend_c <- lm(y3~x2)
+end_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(end_c_pts) <- c("x","y")
+end_c_pts$x <- c(min(x2),max(x2))
+end_c_pts$y <- c(mend_c$coefficients[1] + mend_c$coefficients[2]*min(x2),
+                    mend_c$coefficients[1] + mend_c$coefficients[2]*max(x2))
+
+## Generate Figure 4 
+my_palette <- brewer.pal(name="Dark2",n=6)
+
+# STI
+pa <- ggplot(phenology, aes(x=stirm,y=doy)) +
   geom_point(aes(color=as.factor(year)),size=1) +
   scale_color_manual(values=my_palette) +
-  geom_point(aes(x=maxirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
+  geom_point(aes(x=stirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
   geom_line(data=start_a_pts, aes(x=x,y=y), linetype = "dashed") +
-  geom_line(data=peak_a_pts, aes(x=x,y=y)) +
+  geom_line(data=center_a_pts, aes(x=x,y=y)) +
   geom_line(data=end_a_pts, aes(x=x,y=y), linetype = "dashed") +
-  annotate("text", x = 188, y = 194, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 188, y = 310, label = paste('R^2 ==',round(summary(mpeak_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 188, y = 395, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  xlab(expression('BEUTI'[MAX]*' (yearday)')) +
-  ylab("Song presence\n(yearday)") + 
-  xlim(85,205) +
-  ylim(185,420) +
-  annotate("text", label = "A", x = 87, y = 405, fontface = 2) +
+  annotate("text", x = 45, y = 236, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 45, y = 275, label = paste('R^2 ==',round(summary(mcenter_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 45, y = 315, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 56.5, y = 236, label = "**", size=3, parse = FALSE, hjust = 0) +
+  annotate("text", x = 57, y = 275, label = "*", size=3, parse = FALSE, hjust = 0) +
+  xlab(expression('BEUTI'[STI]*' (yearday)')) +
+  ylab("Behavioral transition\n(yearday)") +  
+  xlim(0,60) +
+  ylim(230,380) +
+  annotate("text", label = "A", x = 1, y = 370, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
-
-# song vs. tumi
-s3b <- ggplot(songplus, aes(x=tumi,y=doy)) +
+  
+# Max index (running mean version)
+pb <- ggplot(phenology, aes(x=maxirm,y=doy)) +
   geom_point(aes(color=as.factor(year)),size=1) +
   scale_color_manual(values=my_palette) +
-  geom_point(aes(x=tumi,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
+  geom_point(aes(x=maxirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
   scale_fill_manual(values=my_palette) +
   geom_line(data=start_b_pts, aes(x=x,y=y), linetype = "dashed") +
-  geom_line(data=peak_b_pts, aes(x=x,y=y)) +
+  geom_line(data=center_b_pts, aes(x=x,y=y)) +
   geom_line(data=end_b_pts, aes(x=x,y=y), linetype = "dashed") +
-  annotate("text", x = 2450, y = 194, label = paste('R^2 ==',round(summary(mstart_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 2450, y = 315, label = paste('R^2 ==',round(summary(mpeak_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 2450, y = 417, label = paste("R^2 ==",round(summary(mend_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 188, y = 347, label = paste('R^2 ==',round(summary(mstart_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 207.5, y = 347, label = "**", size=3, parse = FALSE, hjust = 0) +
+  annotate("text", x = 188, y = 360, label = paste('R^2 ==',round(summary(mcenter_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 207.5, y = 360, label = "*", size=3, parse = FALSE, hjust = 0) +
+  annotate("text", x = 188, y = 373, label = paste("R^2 ==",round(summary(mend_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  xlab(expression('BEUTI'[MAX]*' (yearday)')) +
+  ylab("") + 
+  xlim(110,210) +
+  ylim(230,380) +
+  annotate("text", label = "B", x = 111, y = 370, fontface = 2) +
+  theme_classic() + theme(legend.title = element_blank()) + theme(legend.direction = "horizontal")
+
+# Total upwelling magnitude index
+pc <- ggplot(phenology, aes(x=tumi,y=doy)) +
+  geom_point(aes(color=as.factor(year)),size=1) +
+  scale_color_manual(values=my_palette) +
+  geom_point(aes(x=tumi,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
+  scale_fill_manual(values=my_palette) +
+  geom_line(data=start_c_pts, aes(x=x,y=y), linetype = "dashed") +
+  geom_line(data=center_c_pts, aes(x=x,y=y)) +
+  geom_line(data=end_c_pts, aes(x=x,y=y), linetype = "dashed") +
+  annotate("text", x = 2450, y = 326, label = paste('R^2 ==',round(summary(mstart_c)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 2450, y = 353, label = paste('R^2 ==',round(summary(mcenter_c)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 2780, y = 353, label = "*", size=3, parse = FALSE, hjust = 0) +
+  annotate("text", x = 2450, y = 380, label = paste("R^2 ==",round(summary(mend_c)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 2780, y = 380, label = "*", size=3, parse = FALSE, hjust = 0) +
   xlab(expression('BEUTI'[TUMI]*' (mmol/m/s)')) +
   ylab("") + 
-  xlim(1100,2650) +
-  ylim(185,420) +
-  annotate("text", label = "B", x = 1125, y = 405, fontface = 2) +
+  xlim(1100,2800) +
+  ylim(230,380) +
+  annotate("text", label = "C", x = 1125, y = 370, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
 
-## 2-panel version of Figure S3, showing song presence in comparison to MAX and TUMI
-tiff("outputs/FigS3.tiff",units="in", width=8,height=3,res=300)
-grid.arrange(s3a+theme(legend.position = c(.13,.45),
-                       legend.background = element_blank(),
-                       legend.title = element_blank(),
-                       legend.box.background = element_rect(color = "black")) +
-               guides(color = guide_legend(nrow = 6)),
-             s3b,
-             nrow=1,ncol=2,
+## 3-panel version of Figure 4, showing behavioral transition in comparison to STI, MAX, and TUMI
+tiff("outputs/Fig4_rev.tiff",units="in", width=10,height=3,res=300)
+grid.arrange(pa,
+             pb+theme(legend.position = c(.65,.2),
+                      legend.background = element_blank(),
+                      legend.box.background = element_rect(color = "black")) +
+               guides(color = guide_legend(nrow = 3)),
+             pc,
+             nrow=1,ncol=3,
              heights=c(2.8),
-             widths =c(2.95,2.8))
+             widths =c(2.95,2.8,2.8))
 dev.off()
 
-## Figure S4
-# S4 stats
+
+## Supplemental figure 3
+# S3 stats
 x1 <- c(43,26,42,5,20,5) # STI
-x2 <- c(360,361,360,360,329,361) #END
-x3 <- c(600,1188.1,1485.8,996.8,1021.6,1018.5) #LUMI
+x2 <- c(128,118,123,160,154,185) # MAX index
+x3 <- c(1220.241,1538.166,1910.764,2055.806,1645.540,2400.422) #TUMI
 y1 <- c(211,230,190,189,205,197) # start of song
 y2 <- c(268,302,307,293,315,310) # peak of song
 y3 <- c(252,389,380,392,391,386) # end of song
-y4 <- c(248,256,231,322,296,340) # start of transition
-y5 <- c(267.5,277.5,294,335.5,325.5,353.5) # center of transition
-y6 <- c(287,299,357,349,355,367) # end of transition
-# start of song vs. sti lm
-mstart_a <- lm(y1~x1)
+
+# start of song vs. sti lm (exclude 2015 because blue whale song was present at start of recording period)
+mstart_a <- lm(y1[2:6]~x1[2:6])
 start_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(start_a_pts) <- c("x","y")
-start_a_pts$x <- c(min(x1),max(x1))
+start_a_pts$x <- c(min(x1[2:6]),max(x1[2:6]))
 start_a_pts$y <- c(mstart_a$coefficients[1] + mstart_a$coefficients[2]*min(x1),
                    mstart_a$coefficients[1] + mstart_a$coefficients[2]*max(x1))
 # peak of song vs. sti lm
@@ -427,7 +365,7 @@ peak_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(peak_a_pts) <- c("x","y")
 peak_a_pts$x <- c(min(x1),max(x1))
 peak_a_pts$y <- c(mpeak_a$coefficients[1] + mpeak_a$coefficients[2]*min(x1),
-                   mpeak_a$coefficients[1] + mpeak_a$coefficients[2]*max(x1))
+                  mpeak_a$coefficients[1] + mpeak_a$coefficients[2]*max(x1))
 # end of song vs. sti lm
 mend_a <- lm(y3~x1)
 end_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
@@ -435,11 +373,137 @@ colnames(end_a_pts) <- c("x","y")
 end_a_pts$x <- c(min(x1),max(x1))
 end_a_pts$y <- c(mend_a$coefficients[1] + mend_a$coefficients[2]*min(x1),
                  mend_a$coefficients[1] + mend_a$coefficients[2]*max(x1))
-# start of song vs. end lm
-mstart_b <- lm(y1~x2)
+
+# start of song vs. max lm (exclude 2015 because blue whale song was present at start of recording period)
+mstart_b <- lm(y1[2:6]~x2[2:6])
 start_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(start_b_pts) <- c("x","y")
-start_b_pts$x <- c(min(x2),max(x2))
+start_b_pts$x <- c(min(x2[2:6]),max(x2[2:6]))
+start_b_pts$y <- c(mstart_b$coefficients[1] + mstart_b$coefficients[2]*min(x2),
+                   mstart_b$coefficients[1] + mstart_b$coefficients[2]*max(x2))
+# peak of song vs. max lm
+mpeak_b <- lm(y2~x2)
+peak_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(peak_b_pts) <- c("x","y")
+peak_b_pts$x <- c(min(x2),max(x2))
+peak_b_pts$y <- c(mpeak_b$coefficients[1] + mpeak_b$coefficients[2]*min(x2),
+                  mpeak_b$coefficients[1] + mpeak_b$coefficients[2]*max(x2))
+# end of song vs. max lm
+mend_b <- lm(y3~x2)
+end_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(end_b_pts) <- c("x","y")
+end_b_pts$x <- c(min(x2),max(x2))
+end_b_pts$y <- c(mend_b$coefficients[1] + mend_b$coefficients[2]*min(x2),
+                 mend_b$coefficients[1] + mend_b$coefficients[2]*max(x2))
+
+# start of song vs. tumi lm (exclude 2015 because blue whale song was present at start of recording period)
+mstart_c <- lm(y1[2:6]~x3[2:6])
+start_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(start_c_pts) <- c("x","y")
+start_c_pts$x <- c(min(x3[2:6]),max(x3[2:6]))
+start_c_pts$y <- c(mstart_c$coefficients[1] + mstart_c$coefficients[2]*min(x3),
+                   mstart_c$coefficients[1] + mstart_c$coefficients[2]*max(x3))
+# peak of song vs. tumi lm
+mpeak_c <- lm(y2~x3)
+peak_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(peak_c_pts) <- c("x","y")
+peak_c_pts$x <- c(min(x3),max(x3))
+peak_c_pts$y <- c(mpeak_c$coefficients[1] + mpeak_c$coefficients[2]*min(x3),
+                  mpeak_c$coefficients[1] + mpeak_c$coefficients[2]*max(x3))
+# end of song vs. tumi lm
+mend_c <- lm(y3~x3)
+end_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(end_c_pts) <- c("x","y")
+end_c_pts$x <- c(min(x3),max(x3))
+end_c_pts$y <- c(mend_c$coefficients[1] + mend_c$coefficients[2]*min(x3),
+                 mend_c$coefficients[1] + mend_c$coefficients[2]*max(x3))
+
+# song vs. sti
+s3a <- ggplot(songplus, aes(x=stirm,y=doy)) +
+  geom_point(aes(color=as.factor(year)),size=1) +
+  scale_color_manual(values=my_palette) +
+  geom_point(aes(x=stirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
+  scale_fill_manual(values=my_palette) +
+  geom_line(data=start_a_pts, aes(x=x,y=y), linetype = "dashed") +
+  geom_line(data=peak_a_pts, aes(x=x,y=y)) +
+  geom_line(data=end_a_pts, aes(x=x,y=y), linetype = "dashed") +
+  annotate("text", x = 45, y = 210, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 45, y = 293, label = paste('R^2 ==',round(summary(mpeak_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 45, y = 328, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  xlab(expression('BEUTI'[STI]*' (yearday)')) +
+  ylab("Song presence\n(yearday)") + 
+  xlim(0,60) +
+  annotate("text", label = "A", x = 1, y = 390, fontface = 2) +
+  theme_classic() + theme(legend.position = 'none')
+
+# song vs. max
+s3b <- ggplot(songplus, aes(x=maxirm,y=doy)) +
+  geom_point(aes(color=as.factor(year)),size=1) +
+  scale_color_manual(values=my_palette) +
+  geom_point(aes(x=maxirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
+  scale_fill_manual(values=my_palette) +
+  geom_line(data=start_b_pts, aes(x=x,y=y), linetype = "dashed") +
+  geom_line(data=peak_b_pts, aes(x=x,y=y)) +
+  geom_line(data=end_b_pts, aes(x=x,y=y), linetype = "dashed") +
+  annotate("text", x = 188, y = 194, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 188, y = 310, label = paste('R^2 ==',round(summary(mpeak_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 188, y = 395, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  xlab(expression('BEUTI'[MAX]*' (yearday)')) +
+  ylab("") + 
+  xlim(85,205) +
+  ylim(185,420) +
+  annotate("text", label = "B", x = 87, y = 405, fontface = 2) +
+  theme_classic() + theme(legend.position = 'none')
+
+# song vs. tumi
+s3c <- ggplot(songplus, aes(x=tumi,y=doy)) +
+  geom_point(aes(color=as.factor(year)),size=1) +
+  scale_color_manual(values=my_palette) +
+  geom_point(aes(x=tumi,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
+  scale_fill_manual(values=my_palette) +
+  geom_line(data=start_c_pts, aes(x=x,y=y), linetype = "dashed") +
+  geom_line(data=peak_c_pts, aes(x=x,y=y)) +
+  geom_line(data=end_c_pts, aes(x=x,y=y), linetype = "dashed") +
+  annotate("text", x = 2450, y = 194, label = paste('R^2 ==',round(summary(mstart_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 2450, y = 315, label = paste('R^2 ==',round(summary(mpeak_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  annotate("text", x = 2450, y = 417, label = paste("R^2 ==",round(summary(mend_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
+  xlab(expression('BEUTI'[TUMI]*' (mmol/m/s)')) +
+  ylab("") + 
+  xlim(1100,2650) +
+  ylim(185,420) +
+  annotate("text", label = "C", x = 1125, y = 405, fontface = 2) +
+  theme_classic() + theme(legend.position = 'none')
+
+## 2-panel version of Figure S3, showing song presence in comparison to MAX and TUMI
+tiff("outputs/FigS3.tiff",units="in", width=11,height=3,res=300)
+grid.arrange(s3a,
+             s3b+theme(legend.position = c(.13,.45),
+                       legend.background = element_blank(),
+                       legend.title = element_blank(),
+                       legend.box.background = element_rect(color = "black")) +
+               guides(color = guide_legend(nrow = 6)),
+             s3c,
+             nrow=1,ncol=3,
+             heights=c(2.8),
+             widths =c(3.15,3,3))
+dev.off()
+
+## Figure S4
+# S4 stats
+x2 <- c(360,361,360,360,329,361) #END
+x3 <- c(600,1188.1,1485.8,996.8,1021.6,1018.5) #LUMI
+y1 <- c(211,230,190,189,205,197) # start of song
+y2 <- c(268,302,307,293,315,310) # peak of song
+y3 <- c(252,389,380,392,391,386) # end of song
+y4 <- c(248,256,231,322,296,340) # start of transition
+y5 <- c(267.5,277.5,294,335.5,325.5,353.5) # center of transition
+y6 <- c(287,299,357,349,355,367) # end of transition
+
+# start of song vs. end lm
+mstart_b <- lm(y1[2:6]~x2[2:6])
+start_b_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(start_b_pts) <- c("x","y")
+start_b_pts$x <- c(min(x2[2:6]),max(x2[2:6]))
 start_b_pts$y <- c(mstart_b$coefficients[1] + mstart_b$coefficients[2]*min(x2),
                    mstart_b$coefficients[1] + mstart_b$coefficients[2]*max(x2))
 # peak of song vs. end lm
@@ -457,10 +521,10 @@ end_b_pts$x <- c(min(x2),max(x2))
 end_b_pts$y <- c(mend_b$coefficients[1] + mend_b$coefficients[2]*min(x2),
                  mend_b$coefficients[1] + mend_b$coefficients[2]*max(x2))
 # start of song vs. lumi lm
-mstart_c <- lm(y1~x3)
+mstart_c <- lm(y1[2:6]~x3[2:6])
 start_c_pts <- data.frame(matrix(ncol = 2, nrow = 2))
 colnames(start_c_pts) <- c("x","y")
-start_c_pts$x <- c(min(x3),max(x3))
+start_c_pts$x <- c(min(x3[2:6]),max(x3[2:6]))
 start_c_pts$y <- c(mstart_c$coefficients[1] + mstart_c$coefficients[2]*min(x3),
                    mstart_c$coefficients[1] + mstart_c$coefficients[2]*max(x3))
 # peak of song vs. lumi lm
@@ -477,27 +541,6 @@ colnames(end_c_pts) <- c("x","y")
 end_c_pts$x <- c(min(x3),max(x3))
 end_c_pts$y <- c(mend_c$coefficients[1] + mend_c$coefficients[2]*min(x3),
                  mend_c$coefficients[1] + mend_c$coefficients[2]*max(x3))
-# start of transition vs. sti lm
-mstart_d <- lm(y4~x1)
-start_d_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(start_d_pts) <- c("x","y")
-start_d_pts$x <- c(min(x1),max(x1))
-start_d_pts$y <- c(mstart_d$coefficients[1] + mstart_d$coefficients[2]*min(x1),
-                   mstart_d$coefficients[1] + mstart_d$coefficients[2]*max(x1))
-# center of transition vs. sti lm
-mcenter_d <- lm(y5~x1)
-center_d_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(center_d_pts) <- c("x","y")
-center_d_pts$x <- c(min(x1),max(x1))
-center_d_pts$y <- c(mcenter_d$coefficients[1] + mcenter_d$coefficients[2]*min(x1),
-                    mcenter_d$coefficients[1] + mcenter_d$coefficients[2]*max(x1))
-# end of transition vs. sti lm
-mend_d <- lm(y6~x1)
-end_d_pts <- data.frame(matrix(ncol = 2, nrow = 2))
-colnames(end_d_pts) <- c("x","y")
-end_d_pts$x <- c(min(x1),max(x1))
-end_d_pts$y <- c(mend_d$coefficients[1] + mend_d$coefficients[2]*min(x1),
-                 mend_d$coefficients[1] + mend_d$coefficients[2]*max(x1))
 # start of transition vs. end lm
 mstart_e <- lm(y4~x2)
 start_e_pts <- data.frame(matrix(ncol = 2, nrow = 2))
@@ -541,23 +584,6 @@ end_f_pts$x <- c(min(x3),max(x3))
 end_f_pts$y <- c(mend_f$coefficients[1] + mend_f$coefficients[2]*min(x3),
                  mend_f$coefficients[1] + mend_f$coefficients[2]*max(x3))
 
-s4a <- ggplot(songplus, aes(x=stirm,y=doy)) +
-  geom_point(aes(color=as.factor(year)),size=1) +
-  scale_color_manual(values=my_palette) +
-  geom_point(aes(x=stirm,y=song_peak,fill=as.factor(year)),size=4,shape=22) +
-  scale_fill_manual(values=my_palette) +
-  geom_line(data=start_a_pts, aes(x=x,y=y), linetype = "dashed") +
-  geom_line(data=peak_a_pts, aes(x=x,y=y)) +
-  geom_line(data=end_a_pts, aes(x=x,y=y), linetype = "dashed") +
-  annotate("text", x = 45, y = 210, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 45, y = 293, label = paste('R^2 ==',round(summary(mpeak_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 45, y = 328, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  xlab(expression('BEUTI'[STI]*' (yearday)')) +
-  ylab("Song presence\n(yearday)") + 
-  xlim(0,60) +
-  annotate("text", label = "A", x = 1, y = 390, fontface = 2) +
-  theme_classic() + theme(legend.position = 'none')
-
 s4b <- ggplot(songplus, aes(x=endirm,y=doy)) +
   geom_point(aes(color=as.factor(year)),size=1) +
   scale_color_manual(values=my_palette) +
@@ -570,9 +596,9 @@ s4b <- ggplot(songplus, aes(x=endirm,y=doy)) +
   annotate("text", x = 364, y = 298, label = paste('R^2 ==',round(summary(mpeak_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   annotate("text", x = 364, y = 360, label = paste("R^2 ==",round(summary(mend_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   xlab(expression('BEUTI'[END]*' (yearday)')) +
-  ylab("") + 
+  ylab("Song presence\n(yearday)") +  
   xlim(320,380) +
-  annotate("text", label = "B", x = 321, y = 390, fontface = 2) +
+  annotate("text", label = "A", x = 321, y = 390, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
 
 s4c <- ggplot(songplus, aes(x=tumi2,y=doy)) +
@@ -589,27 +615,7 @@ s4c <- ggplot(songplus, aes(x=tumi2,y=doy)) +
   xlab(expression('BEUTI'[LUMI]*' (mmol/m/s)')) +
   ylab("") + 
   xlim(500,1750) +
-  annotate("text", label = "C", x = 525, y = 440, fontface = 2) +
-  theme_classic() + theme(legend.position = 'none')
-
-s4d <- ggplot(phenology, aes(x=stirm,y=doy)) +
-  geom_point(aes(color=as.factor(year)),size=1) +
-  scale_color_manual(values=my_palette) +
-  geom_point(aes(x=stirm,y=doycentr,fill=as.factor(year)),size=4,shape=22) +
-  scale_fill_manual(values=my_palette) +
-  geom_line(data=start_d_pts, aes(x=x,y=y), linetype = "dashed") +
-  geom_line(data=center_d_pts, aes(x=x,y=y)) +
-  geom_line(data=end_d_pts, aes(x=x,y=y), linetype = "dashed") +
-  annotate("text", x = 45, y = 236, label = paste('R^2 ==',round(summary(mstart_d)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 45, y = 275, label = paste('R^2 ==',round(summary(mcenter_d)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 45, y = 315, label = paste("R^2 ==",round(summary(mend_d)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 56.5, y = 236, label = "*", size=3, parse = FALSE, hjust = 0) +
-  annotate("text", x = 56.5, y = 275, label = "*", size=3, parse = FALSE, hjust = 0) +
-  xlab(expression('BEUTI'[STI]*' (yearday)')) +
-  ylab("Behavioral transition\n(yearday)") +  
-  xlim(0,60) +
-  ylim(230,375) +
-  annotate("text", label = "D", x = 1, y = 370, fontface = 2) +
+  annotate("text", label = "B", x = 525, y = 440, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
 
 s4e <- ggplot(phenology, aes(x=endirm,y=doy)) +
@@ -624,10 +630,10 @@ s4e <- ggplot(phenology, aes(x=endirm,y=doy)) +
   annotate("text", x = 364, y = 307, label = paste('R^2 ==',round(summary(mpeak_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   annotate("text", x = 364, y = 335, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   xlab(expression('BEUTI'[END]*' (yearday)')) +
-  ylab("") + 
+  ylab("Behavioral transition\n(yearday)") +   
   xlim(320,380) +
   ylim(230,375) +
-  annotate("text", label = "E", x = 321, y = 370, fontface = 2) +
+  annotate("text", label = "C", x = 321, y = 370, fontface = 2) +
   theme_classic()  + theme(legend.title = element_blank()) + theme(legend.direction = "horizontal")
 
 s4f <- ggplot(phenology, aes(x=tumi2,y=doy)) +
@@ -645,24 +651,115 @@ s4f <- ggplot(phenology, aes(x=tumi2,y=doy)) +
   ylab("") + 
   xlim(500,1750) +
   ylim(230,375) +
-  annotate("text", label = "F", x = 525, y = 370, fontface = 2) +
+  annotate("text", label = "D", x = 525, y = 370, fontface = 2) +
   theme_classic() + theme(legend.position = 'none')
 
 ## 6-panel version of Figure S4, showing acoustic comparisons to STI, END, and LUMI
-tiff("outputs/FigS4.tiff",units="in", width=10.5,height=6,res=300)
-grid.arrange(s4a+theme(legend.position = 'none'),
-             s4b,
+tiff("outputs/FigS4.tiff",units="in", width=7.5,height=6,res=300)
+grid.arrange(s4b+theme(legend.position = 'none'),
              s4c,
-             s4d,
              s4e+theme(legend.position = c(.3,.2),
                        legend.background = element_blank(),
                        legend.box.background = element_rect(color = "black")) +
                guides(color = guide_legend(nrow = 3)),
              s4f,
-             nrow=2,ncol=3,
+             nrow=2,ncol=2,
              heights=c(2.8,2.8),
-             widths =c(2.95,2.8,2.8))
+             widths =c(2.95,2.8))
 dev.off()
 
+############### Additional supplemental figure showing preliminary exploration of potential interannual carryover effects
+carryover <- data.frame(matrix(ncol = 9, nrow = 6))
+colnames(carryover) <- c("year","first","center","final","sti","max","end","tumi","lumi")
+carryover$year <- 2015:2020
+carryover$first <- c(248,256,231,322,296,340) # start of transition
+carryover$center <- c(267.5,277.5,294,335.5,325.5,353.5) # center of transition
+carryover$final <- c(287,299,357,349,355,367) # end of transition
+
+# calculate the 2014 BEUTI phenology metrics so we can test carryover effects into whale behavior in 2015
+# Monterey Bay BEUTI (37 N)
+beuti <- beuti_daily[which(beuti_daily$year == 2014),]
+beuti$mbcsum <- cumsum(beuti$X37N)
+beuti$mbcsumrm <- rollapply(beuti$mbcsum,windowsize,mean,fill=NA,na.rm = TRUE)
+beuti$mbrm <- rollapply(beuti$X37N,windowsize,mean,fill=NA,na.rm = TRUE)
+# phenology metrics for 2014
+carryover$sti[1] <- which.min(beuti$mbcsumrm)
+carryover$end[1] <- which.max(beuti$mbcsumrm)
+carryover$max[1] <- which.max(beuti$mbrm)
+carryover$tumi[1] <- sum(beuti$X37N[carryover$sti[1]:carryover$end[1]])
+carryover$lumi[1] <- sum(beuti$X37N[carryover$max[1]:carryover$end[1]])
+ 
+# now add in 2015-2020 BEUTI phenology metrics (already calculated above) 
+# for STI and all other BEUTI phenology metrics below, this is the preceding year to test for carryover effects (e.g. row for 2015 contains STI for 2014) 
+carryover$sti[2:6] <- c(43,26,42,5,20)
+carryover$max[2:6] <- c(128,118,123,160,154)
+carryover$end[2:6] <- c(360,361,360,360,329)
+carryover$tumi[2:6] <- c(1220.241,1538.166,1910.764,2055.806,1645.540)
+carryover$lumi[2:6] <- c(600,1188.1,1485.8,996.8,1021.6)
+
+## Stats
+# start of transition vs. sti lm
+mstart_a <- lm(carryover$first~carryover$sti)
+start_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(start_a_pts) <- c("x","y")
+start_a_pts$x <- c(min(carryover$sti),max(carryover$sti))
+start_a_pts$y <- c(mstart_a$coefficients[1] + mstart_a$coefficients[2]*min(carryover$sti),
+                   mstart_a$coefficients[1] + mstart_a$coefficients[2]*max(carryover$sti))
+# center of transition vs. sti lm
+mcenter_a <- lm(carryover$center~carryover$sti)
+center_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(center_a_pts) <- c("x","y")
+center_a_pts$x <- c(min(carryover$sti),max(carryover$sti))
+center_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(carryover$sti),
+                    mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(carryover$sti))
+# end of transition vs. sti lm
+mend_a <- lm(carryover$final~carryover$sti)
+end_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(end_a_pts) <- c("x","y")
+end_a_pts$x <- c(min(carryover$sti),max(carryover$sti))
+end_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(carryover$sti),
+                    mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(carryover$sti))
+# start of transition vs. max lm
+mstart_a <- lm(carryover$first~carryover$max)
+start_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(start_a_pts) <- c("x","y")
+start_a_pts$x <- c(min(carryover$max),max(carryover$max))
+start_a_pts$y <- c(mstart_a$coefficients[1] + mstart_a$coefficients[2]*min(carryover$max),
+                   mstart_a$coefficients[1] + mstart_a$coefficients[2]*max(carryover$max))
+# center of transition vs. max lm
+mcenter_a <- lm(carryover$center~carryover$max)
+center_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(center_a_pts) <- c("x","y")
+center_a_pts$x <- c(min(carryover$max),max(carryover$max))
+center_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(carryover$max),
+                    mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(carryover$max))
+# end of transition vs. max lm
+mend_a <- lm(carryover$final~carryover$max)
+end_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(end_a_pts) <- c("x","y")
+end_a_pts$x <- c(min(carryover$max),max(carryover$max))
+end_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(carryover$max),
+                 mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(carryover$max))
+# start of transition vs. tumi lm
+mstart_a <- lm(carryover$first~carryover$tumi)
+start_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(start_a_pts) <- c("x","y")
+start_a_pts$x <- c(min(carryover$tumi),max(carryover$tumi))
+start_a_pts$y <- c(mstart_a$coefficients[1] + mstart_a$coefficients[2]*min(carryover$tumi),
+                   mstart_a$coefficients[1] + mstart_a$coefficients[2]*max(carryover$tumi))
+# center of transition vs. tumi lm
+mcenter_a <- lm(carryover$center~carryover$tumi)
+center_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(center_a_pts) <- c("x","y")
+center_a_pts$x <- c(min(carryover$tumi),max(carryover$tumi))
+center_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(carryover$tumi),
+                    mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(carryover$tumi))
+# end of transition vs. tumi lm
+mend_a <- lm(carryover$final~carryover$tumi)
+end_a_pts <- data.frame(matrix(ncol = 2, nrow = 2))
+colnames(end_a_pts) <- c("x","y")
+end_a_pts$x <- c(min(carryover$tumi),max(carryover$tumi))
+end_a_pts$y <- c(mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*min(carryover$tumi),
+                 mcenter_a$coefficients[1] + mcenter_a$coefficients[2]*max(carryover$tumi))
 
 

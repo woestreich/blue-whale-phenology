@@ -74,9 +74,12 @@ ci_daily_seq$pv2 <- dci_sig2$pv
 ci_daily_seq$ratio_rm <- rollapply(ci_daily_seq$ratio,windowsize,mean,fill=NA,na.rm = TRUE)
 ci_daily_seq$ratio_rm[1:209] <- NA # correct for running mean creating "artificial" ratio values before the first date of recording (July 29, 2015)
 ci_daily_seq$all_rm <- rollapply(ci_daily_seq$all,windowsize,mean,fill=NA,na.rm = TRUE)
+ci_daily_seq$all_rm[1:209] <- NA # correct for running mean creating "artificial" values before the first date of recording (July 29, 2015)
 ci_daily_seq$ratio_rm[ci_daily_seq$all_rm < 1.01] <- NA
 ci_daily_seq$n_rm <- rollapply(ci_daily_seq$n,windowsize,mean,fill=NA,na.rm = TRUE)
+ci_daily_seq$n_rm[1:209] <- NA # correct for running mean creating "artificial" values before the first date of recording (July 29, 2015)
 ci_daily_seq$d_rm <- rollapply(ci_daily_seq$d,windowsize,mean,fill=NA,na.rm = TRUE)
+ci_daily_seq$d_rm[1:209] <- NA # correct for running mean creating "artificial" values before the first date of recording (July 29, 2015)
 
 ## only consider CInight:CIday for days with blue whale song presence (CI >= 1.01)
 ci_daily_seq$pv1[ci_daily_seq$all_rm < 1.01] <- NA
@@ -113,6 +116,24 @@ pa <- ci_daily_seq %>%
   select(date,n_rm,d_rm) %>% 
   pivot_longer(-date) %>%
   ggplot(aes(x=date,y = value)) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2015-07-30"), xmax = as.Date("2015-12-17"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2016-08-19"), xmax = as.Date("2017-01-26"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2017-07-08"), xmax = as.Date("2018-01-13"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2018-07-10"), xmax = as.Date("2019-01-29"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2019-07-26"), xmax = as.Date("2020-01-27"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2020-07-14"), xmax = as.Date("2021-01-24"),
+           ymin = -Inf, ymax = Inf) +
   geom_line(aes(linetype = name)) +
   xlab("") +
   scale_x_date(date_breaks = "1 months",date_labels = "%b",date_minor_breaks = "1 month",expand = c(0, 0)) +
@@ -128,12 +149,12 @@ pa <- ci_daily_seq %>%
   ylim(0.98, 1.22) +
   ylab(expression(atop("Blue whale song ", paste("call index (CI)")))) +
   scale_linetype_manual(values = c(1, 3), labels = c("day", "night"), name = "") +
-  annotate("text", label = "2015", x = as.Date("2015-07-01"), y = 1.2) +
-  annotate("text", label = "2016", x = as.Date("2016-07-01"), y = 1.2) +
-  annotate("text", label = "2017", x = as.Date("2017-07-01"), y = 1.2) +
-  annotate("text", label = "2018", x = as.Date("2018-07-01"), y = 1.2) +
-  annotate("text", label = "2019", x = as.Date("2019-07-01"), y = 1.2) +
-  annotate("text", label = "2020", x = as.Date("2020-07-01"), y = 1.2) +
+  annotate("text", label = "2015", x = as.Date("2015-05-25"), y = 1.2) +
+  annotate("text", label = "2016", x = as.Date("2016-05-25"), y = 1.2) +
+  annotate("text", label = "2017", x = as.Date("2017-05-25"), y = 1.2) +
+  annotate("text", label = "2018", x = as.Date("2018-05-25"), y = 1.2) +
+  annotate("text", label = "2019", x = as.Date("2019-05-25"), y = 1.2) +
+  annotate("text", label = "2020", x = as.Date("2020-05-25"), y = 1.2) +
   annotate("text", label = "A", x = as.Date("2015-02-01"), y = 1.2, fontface = 2) +
   geom_segment(aes(x=as.Date("2015-01-15"), y=1.125, xend=as.Date("2015-04-15"), yend=1.125),color="black") +
   geom_segment(aes(x=as.Date("2015-01-15"), y=1.075, xend=as.Date("2015-04-15"), yend=1.075),color="black",linetype="dotted") +
@@ -144,6 +165,24 @@ pa <- ci_daily_seq %>%
 pb <- ci_daily_seq %>%
   select(date,ratio_rm,ratio) %>% 
   ggplot(aes(x=date,y=ratio_rm)) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2015-07-30"), xmax = as.Date("2015-12-17"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2016-08-19"), xmax = as.Date("2017-01-26"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2017-07-08"), xmax = as.Date("2018-01-13"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2018-07-10"), xmax = as.Date("2019-01-29"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2019-07-26"), xmax = as.Date("2020-01-27"),
+           ymin = -Inf, ymax = Inf) +
+  annotate("rect", fill = "gray", alpha = 0.4, 
+           xmin = as.Date("2020-07-14"), xmax = as.Date("2021-01-24"),
+           ymin = -Inf, ymax = Inf) +
   geom_line() + 
   geom_point(data = decrease15,aes(x=date,y=ratio_rm),color="red",size=1) +
   geom_point(data = decrease16,aes(x=date,y=ratio_rm),color="red",size=1) +
@@ -163,12 +202,12 @@ pb <- ci_daily_seq %>%
   geom_vline(xintercept=as.Date("2021-01-01")) +
   ylim(0.8, 2.1) +
   labs(y=expression(paste('CI'[night],':CI'[day])), x = "") +
-  annotate("text", label = "2015", x = as.Date("2015-07-01"), y = 2) +
-  annotate("text", label = "2016", x = as.Date("2016-07-01"), y = 2) +
-  annotate("text", label = "2017", x = as.Date("2017-07-01"), y = 2) +
-  annotate("text", label = "2018", x = as.Date("2018-07-01"), y = 2) +
-  annotate("text", label = "2019", x = as.Date("2019-07-01"), y = 2) +
-  annotate("text", label = "2020", x = as.Date("2020-07-01"), y = 2) +
+  annotate("text", label = "2015", x = as.Date("2015-05-25"), y = 2) +
+  annotate("text", label = "2016", x = as.Date("2016-05-25"), y = 2) +
+  annotate("text", label = "2017", x = as.Date("2017-05-25"), y = 2) +
+  annotate("text", label = "2018", x = as.Date("2018-05-25"), y = 2) +
+  annotate("text", label = "2019", x = as.Date("2019-05-25"), y = 2) +
+  annotate("text", label = "2020", x = as.Date("2020-05-25"), y = 2) +
   geom_point(aes(x=as.Date("2015-01-17"), y=1.7),color="red") +
   annotate("text", label = "Behavioral", x = as.Date("2015-02-01"), y = 1.7, hjust=0) +
   annotate("text", label = "transition", x = as.Date("2015-02-01"), y = 1.5, hjust=0) +
