@@ -5,7 +5,7 @@
 # Generates Figure 4 and Supplemental Figures 3 & 4
 #
 # Will Oestreich
-# Last update: June 21, 2021
+# Last update: January 1, 2022
 #####################################
 
 ## clear variables and load packages
@@ -278,7 +278,7 @@ pa <- ggplot(phenology, aes(x=stirm,y=doy)) +
   annotate("text", x = 45, y = 236, label = paste('R^2 ==',round(summary(mstart_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   annotate("text", x = 45, y = 275, label = paste('R^2 ==',round(summary(mcenter_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   annotate("text", x = 45, y = 315, label = paste("R^2 ==",round(summary(mend_a)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 56.5, y = 236, label = "**", size=3, parse = FALSE, hjust = 0) +
+  annotate("text", x = 56.5, y = 236, label = "*", size=3, parse = FALSE, hjust = 0) +
   annotate("text", x = 57, y = 275, label = "*", size=3, parse = FALSE, hjust = 0) +
   xlab(expression('BEUTI'[STI]*' (yearday)')) +
   ylab("Behavioral transition\n(yearday)") +  
@@ -297,7 +297,7 @@ pb <- ggplot(phenology, aes(x=maxirm,y=doy)) +
   geom_line(data=center_b_pts, aes(x=x,y=y)) +
   geom_line(data=end_b_pts, aes(x=x,y=y), linetype = "dashed") +
   annotate("text", x = 188, y = 347, label = paste('R^2 ==',round(summary(mstart_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
-  annotate("text", x = 207.5, y = 347, label = "**", size=3, parse = FALSE, hjust = 0) +
+  annotate("text", x = 207.5, y = 347, label = "*", size=3, parse = FALSE, hjust = 0) +
   annotate("text", x = 188, y = 360, label = paste('R^2 ==',round(summary(mcenter_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
   annotate("text", x = 207.5, y = 360, label = "*", size=3, parse = FALSE, hjust = 0) +
   annotate("text", x = 188, y = 373, label = paste("R^2 ==",round(summary(mend_b)$r.squared, 2)), size=3, parse = TRUE, hjust = 0) +
