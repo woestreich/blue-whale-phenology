@@ -8,3 +8,8 @@ The repository is organized as follows:
 * **outputs:** Outputs from scripts (data tables and figures). This includes 2 files detailing the Benjamini-Hochberg procedure used to correct for multiple hypothesis testing (bh_correction_songpresence.csv & bh_correction_behaviorpresence.csv).
 
 The full archive of passive acoustic monitoring data from the Monterey Bay Aquarium Research Institute's MARS hydrophone (used in this study) is available at: https://registry.opendata.aws/pacific-sound/ 
+
+
+[![DOI](https://zenodo.org/badge/363498714.svg)](https://zenodo.org/badge/latestdoi/363498714)
+
+
