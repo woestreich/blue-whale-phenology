@@ -20,6 +20,9 @@ library(zoo)
 library(lubridate)
 library(directlabels)
 
+## set working directory
+setwd("/Users/woestreich/Dropbox/Documents/blue-whale-phenology/")
+
 ## set running mean window size
 windowsize = 10
 
@@ -219,7 +222,6 @@ pb<-ggplot(beuti_clim, aes(yday,csummean)) +
   annotate("text", label = paste("Climatological","mean"), x = 112, y = 2990) +
   annotate("text", label = paste("Climatological","5th-95th","pctl"), x = 135, y = 2790) +
   annotate("text", label = "B", x = 10, y = 3300, fontface = 2)  +
-  geom_point(x=270,y=2853,size=4) +
   ylim(-150,3300) 
 # Combine panels
 pa+pb
